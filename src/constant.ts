@@ -1,1 +1,1 @@
-export const DB_NAME = 'gen-reel';
+export const DB_NAME = "gen-reel"
