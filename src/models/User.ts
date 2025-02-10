@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs"
 // While creating user we won't have _id and timestamps, so it's optional
 export interface IUser {
 	_id?: mongoose.Types.ObjectId
+	fullName: string
 	email: string
 	password: string
 	createdAt?: Date
@@ -13,6 +14,11 @@ export interface IUser {
 
 const UserSchema = new Schema<IUser>(
 	{
+		fullName: {
+			type: String,
+			required: [true, "Full Name is required"],
+			trim: true,
+		},
 		email: {
 			type: String,
 			required: [true, "Email is required"],
