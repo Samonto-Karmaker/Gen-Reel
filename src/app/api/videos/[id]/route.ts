@@ -6,7 +6,7 @@ import { NextRequest, NextResponse } from "next/server"
 export async function GET(req: NextRequest) {
 	const id = getIdFromReq(req)
 	if (!id) {
-		return NextResponse.json({ message: "Invalid request" }, { status: 400 })
+		return NextResponse.json({ message: "Invalid video id" }, { status: 400 })
 	}
 
 	try {
