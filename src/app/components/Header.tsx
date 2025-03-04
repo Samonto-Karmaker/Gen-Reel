@@ -1,6 +1,6 @@
 "use client"
 
-import { useSession } from "next-auth/react"
+import { signOut, useSession } from "next-auth/react"
 import { useNotification } from "./Notification"
 import Link from "next/link"
 import { Home, User } from "lucide-react"
@@ -24,6 +24,16 @@ export default function Header() {
 		setTheme(newTheme)
 		localStorage.setItem("theme", newTheme)
 		document.documentElement.setAttribute("data-theme", newTheme)
+	}
+
+	const handleSignOut = async () => {
+		try {
+			await signOut()
+			showNotification("You have been signed out", "success")
+		} catch (error) {
+			console.error("Failed to sign out", error)
+			showNotification("Failed to sign out", "error")
+		}
 	}
 
 	return (
@@ -74,7 +84,10 @@ export default function Header() {
 										</li>
 
 										<li>
-											<button className="px-4 py-2 text-error hover:bg-base-200 w-full text-left">
+											<button 
+												className="px-4 py-2 text-error hover:bg-base-200 w-full text-left"
+												onClick={handleSignOut}
+											>
 												Sign Out
 											</button>
 										</li>
