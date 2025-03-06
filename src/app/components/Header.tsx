@@ -4,27 +4,12 @@ import { signOut, useSession } from "next-auth/react"
 import { useNotification } from "./Notification"
 import Link from "next/link"
 import { Home, User } from "lucide-react"
-import { useEffect, useState } from "react"
+import { useTheme } from "./Theme"
 
 export default function Header() {
 	const { data: session } = useSession()
 	const { showNotification } = useNotification()
-	const [theme, setTheme] = useState("light")
-
-	useEffect(() => {
-		const savedTheme = localStorage.getItem("theme")
-		if (savedTheme) {
-			setTheme(savedTheme)
-		}
-		document.documentElement.setAttribute("data-theme", theme)
-	}, [])
-
-	const toggleTheme = () => {
-		const newTheme = theme === "light" ? "dark" : "light"
-		setTheme(newTheme)
-		localStorage.setItem("theme", newTheme)
-		document.documentElement.setAttribute("data-theme", newTheme)
-	}
+	const { theme, toggleTheme} = useTheme()
 
 	const handleSignOut = async () => {
 		try {
@@ -114,7 +99,7 @@ export default function Header() {
 								type="checkbox"
 								className="theme-controller"
 								onChange={toggleTheme}
-								checked={theme === "light"}
+								checked={theme === "dark"}
 							/>
 
 							{/* sun icon */}
