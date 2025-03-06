@@ -30,7 +30,10 @@ export default function Login() {
 			}
 		} catch (error) {
 			console.error(error)
-			showNotification("Something went wrong", "error")
+			showNotification(
+				error instanceof Error ? error.message : "Something went wrong",
+				"error"
+			)
 		}
 	}
 
