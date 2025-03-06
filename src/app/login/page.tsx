@@ -3,15 +3,35 @@
 import Link from "next/link"
 import { FormEvent, useState } from "react"
 import { useNotification } from "../components/Notification"
+import { signIn } from "next-auth/react"
+import { useRouter } from "next/navigation"
 
 export default function Login() {
 	const [email, setEmail] = useState("")
 	const [password, setPassword] = useState("")
 	const { showNotification } = useNotification()
+	const router = useRouter()
 
 	const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
-		showNotification(`${email} ${password}`, "info")
+		try {
+			const response = await signIn("credentials", {
+				email,
+				password,
+				redirect: false,
+			})
+
+			if (response?.error) {
+				showNotification(response.error, "error")
+				setPassword("")
+			} else {
+				showNotification("Logged in successfully", "success")
+				router.push("/")
+			}
+		} catch (error) {
+			console.error(error)
+			showNotification("Something went wrong", "error")
+		}
 	}
 
 	return (
@@ -25,28 +45,32 @@ export default function Login() {
 								Email
 							</label>
 							<input
+								id="email"
 								className="w-full px-3 py-2 border-2 border-black rounded-lg"
 								type="email"
 								value={email}
 								onChange={e => setEmail(e.target.value)}
 								required
 								placeholder="mail@site.com"
+								aria-label="Email"
 							/>
 						</div>
 						<div>
 							<label
-								htmlFor="Password"
+								htmlFor="password"
 								className="block mb-2 text-lg font-medium"
 							>
 								Password
 							</label>
 							<input
+								id="password"
 								className="w-full px-3 py-2 border-2 border-black rounded-lg"
 								type="password"
 								value={password}
 								onChange={e => setPassword(e.target.value)}
 								required
 								placeholder="********"
+								aria-label="Password"
 							/>
 						</div>
 						<button type="submit" className="btn btn-primary w-full">
