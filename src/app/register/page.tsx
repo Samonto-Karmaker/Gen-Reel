@@ -11,7 +11,7 @@ enum RegisterFields {
 	ConfirmPassword = "confirmPassword",
 }
 
-interface RegisterState {
+interface IRegisterState {
 	userName: string
 	email: string
 	password: string
@@ -22,7 +22,7 @@ type RegisterAction =
 	| { type: RegisterFields; payload: string }
 	| { type: "RESET" }
 
-const initialState: RegisterState = {
+const initialState: IRegisterState = {
 	userName: "",
 	email: "",
 	password: "",
@@ -30,9 +30,9 @@ const initialState: RegisterState = {
 }
 
 const reducer = (
-	state: RegisterState,
+	state: IRegisterState,
 	action: RegisterAction
-): RegisterState => {
+): IRegisterState => {
 	switch (action.type) {
 		case RegisterFields.UserName:
 			return { ...state, userName: action.payload }
