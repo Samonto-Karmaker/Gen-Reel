@@ -1,5 +1,6 @@
 "use client"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { ChangeEvent, FormEvent, useReducer } from "react"
 import { useNotification } from "../components/Notification"
 
@@ -51,20 +52,46 @@ const reducer = (
 export default function Register() {
 	const [state, dispatch] = useReducer(reducer, initialState)
 	const { showNotification } = useNotification()
+	const router = useRouter()
 
 	const handleFieldChange = (e: ChangeEvent<HTMLInputElement>) => {
 		dispatch({ type: e.target.name as RegisterFields, payload: e.target.value })
 	}
 
-	const handleRegister = (e: FormEvent<HTMLFormElement>) => {
+	const handleRegister = async (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
 		if (state.password !== state.confirmPassword) {
 			showNotification("Passwords do not match", "error")
 			return
 		}
-		// Handle form submission logic here
-		console.log(state)
-		dispatch({ type: "RESET" })
+
+		try {
+			const response = await fetch("/api/auth/register", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					fullName: state.userName,
+					email: state.email,
+					password: state.password,
+				}),
+			})
+
+			const result = await response.json()
+			if (!response.ok) {
+				throw new Error(result.error)
+			}
+
+			showNotification("Registration successful! Please log in.", "success")
+			router.push("/login")
+
+			dispatch({ type: "RESET" })
+		} catch (error) {
+			showNotification(
+				error instanceof Error ? error.message : "An error occurred",
+				"error"
+			)
+			console.error(error)
+		}
 	}
 
 	return (
